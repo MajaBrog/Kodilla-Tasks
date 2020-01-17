@@ -5,7 +5,7 @@ echo runcrud has errors - breaking work
 goto fail
 
 :openBrowser
- start "" http://localhost:8080/crud/v1/task/getTasks
+start "" http://localhost:8080/crud/v1/task/getTasks
 goto end
 
 :fail
