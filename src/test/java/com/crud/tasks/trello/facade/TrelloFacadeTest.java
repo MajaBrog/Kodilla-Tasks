@@ -104,15 +104,22 @@ public class TrelloFacadeTest {
         //Given
         TrelloCardDto trelloCardDto = new TrelloCardDto("test facade", "test fascade", "pos", "listId");
         TrelloCard trelloCard = new TrelloCard("test facade", "test fascade", "pos", "listId");
-        CreatedTrelloCardDto createdTrelloCardDto = new CreatedTrelloCardDto("1", "test facade createCard",
-                "http://test.com");
+
+        TrelloBadgesDto trelloBadgesDto=new TrelloBadgesDto(2,new TrelloAttachmentsByTypeDto(new TrelloDto(234,235)));
+        CreatedTrelloCardDto createdTrelloCardDto = new CreatedTrelloCardDto("1", "test facade",
+                "http://test.com",trelloBadgesDto);
         when(trelloMapper.mapToCard(trelloCardDto)).thenReturn(trelloCard);
         when(trelloMapper.mapToCardDto(trelloCard)).thenReturn(trelloCardDto);
-        when(trelloFacade.createCard(trelloCardDto)).thenReturn(createdTrelloCardDto);
+        when(trelloService.createTrelloCard(trelloCardDto)).thenReturn(createdTrelloCardDto);
+
         //When
-        CreatedTrelloCardDto result = trelloFacade.createCard(trelloCardDto);
+        CreatedTrelloCardDto createdTrelloCardDto1 = trelloFacade.createCard(trelloCardDto);
         //Then
-        assertEquals("test facade createCard", result.getName());
-        assertEquals("http://test.com", result.getShortUrl());
+        assertEquals("1", createdTrelloCardDto1.getId());
+        assertEquals("test facade", createdTrelloCardDto1.getName());
+        assertEquals("http://test.com", createdTrelloCardDto1.getShortUrl());
+        assertEquals(2,createdTrelloCardDto1.getBadges().getVotes());
+        assertEquals(234,createdTrelloCardDto1.getBadges().getAttachmentsByType().getTrello().getBoard());
+        assertEquals(235,createdTrelloCardDto1.getBadges().getAttachmentsByType().getTrello().getCard());
     }
 }
