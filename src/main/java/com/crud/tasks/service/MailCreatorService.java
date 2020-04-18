@@ -24,15 +24,36 @@ public class MailCreatorService {
     private final TemplateEngine templateEngine;
 
     public String buildTrelloCardEmail(String message) {
+        List<String> functionality = new ArrayList<>();
+        functionality.add("You can manage your tusks");
+        functionality.add("Provides connection with Trello Account");
+        functionality.add("Application allows sending tasks to Trello");
 
         Context context= new Context();
         context.setVariable("message", message);
         context.setVariable("tasks_url", "https://MajaBrog.github.io/");
         context.setVariable("button", "Visit website");
-        context.setVariable("admin_name", adminConfig.getAdminName());
+        context.setVariable("show_button", true);
+        context.setVariable("admin_config", adminConfig);
+        context.setVariable("is_friend", true);
         context.setVariable("goodbye_message", "Best regards");
+        context.setVariable("application_functionality", functionality);
         context.setVariable("company_details", companyConfig);
         return templateEngine.process("mail/created-trello-card-mail", context);
+    }
+
+    public String buildInformationEmail(String message) {
+
+        Context context= new Context();
+        context.setVariable("message", message);
+        context.setVariable("tasks_url", "https://MajaBrog.github.io/");
+        context.setVariable("button", "Visit website");
+        context.setVariable("show_button", true);
+        context.setVariable("admin_config", adminConfig);
+        context.setVariable("is_friend", true);
+        context.setVariable("goodbye_message", "Best regards");
+        context.setVariable("company_details", companyConfig);
+        return templateEngine.process("mail/information-mail", context);
     }
 
 }

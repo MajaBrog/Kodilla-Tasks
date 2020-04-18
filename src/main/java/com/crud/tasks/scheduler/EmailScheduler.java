@@ -2,6 +2,7 @@ package com.crud.tasks.scheduler;
 
 import com.crud.tasks.config.AdminConfig;
 import com.crud.tasks.domain.Mail;
+import com.crud.tasks.domain.MailTemplate;
 import com.crud.tasks.repository.TaskRepository;
 import com.crud.tasks.service.SimpleEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,16 @@ public class EmailScheduler {
 
     private static final String SUBJECT = "Tasks: once a day mail";
 
-    @Scheduled(cron = "0 0 10 * * *")
+    //@Scheduled(cron = "0 0 10 * * *")
 
-    //@Scheduled(fixedDelay = 100000000)
+    @Scheduled(fixedDelay = 100000000)
     public void sendInformationEmail() {
         long size = taskRepository.count();
         simpleEmailService.send(new Mail(
                         adminConfig.getAdminMail(),
                         SUBJECT,
                         createMessage()
-                )
+                ), MailTemplate.INFO
         );
     }
 

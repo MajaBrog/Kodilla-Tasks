@@ -1,6 +1,7 @@
 package com.crud.tasks.service;
 
 import com.crud.tasks.domain.Mail;
+import com.crud.tasks.domain.MailTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,10 @@ public class SimpleEmailService {
     @Autowired
     private MailCreatorService mailCreatorService;
 
-    public void send(final Mail mail) {
+    public void send(final Mail mail, MailTemplate mailTemplate) {
         LOGGER.info("Starting email preparation...");
         try {
-            MimeMessagePreparator mailMessage = createMimeMessage(mail);
+            MimeMessagePreparator mailMessage = createMimeMessage(mail,mailTemplate);
             javaMailSender.send(mailMessage);
             LOGGER.info("Email has been sent.");
         } catch (MailException e) {
@@ -31,13 +32,16 @@ public class SimpleEmailService {
         }
     }
 
-    private MimeMessagePreparator createMimeMessage(final Mail mail) {
+    private MimeMessagePreparator createMimeMessage(final Mail mail, MailTemplate mailTemplate) {
         return mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setTo(mail.getMailTo());
             messageHelper.setSubject(mail.getSubject());
-            messageHelper.setText(mailCreatorService.buildTrelloCardEmail(mail.getMessage()), true);
-
+            if (mailTemplate == MailTemplate.NEW_CARD)
+                messageHelper.setText(mailCreatorService.buildTrelloCardEmail(mail.getMessage()), true);
+            else if (mailTemplate == MailTemplate.INFO) {
+                messageHelper.setText(mailCreatorService.buildInformationEmail(mail.getMessage()), true);
+            }
         };
     }
 
